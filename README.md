@@ -1,2 +1,439 @@
 # PUBH3005-Assessment3
 COVID-19 Pathology Results Interactive Dashboard
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>COVID-19 and Pathology Results</title>
+    <script
+    src="https://cdn.plot.ly/plotly-2.26.0.min.js">
+    </script>
+    <style>
+              body {
+        background-color: #f1eef8;
+      }
+        p {
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body> 
+
+    <h1>COVID-19 Status and Pathology Results</h1>
+
+    <h2>Background</h2>
+
+    <p>
+    COVID-19 causes inflammation in the body, which can change the results of routine blood tests. This page compares five of these tests between patients with and without COVID-19.
+    </p>
+
+    <ul>
+    <li> Ferritin - a protein that stores iron and also rises with inflammation.</li>
+    <li> Troponin - a marker of damage to the heart muscle.</li>
+    <li> Neutrophils - white blood cells that respond to infection and inflammation.</li>
+    <li> Lymphocytes - white blood cells involved in the immune response.</li>
+    <li> CRP (C-reactive protein) - a general marker of inflammation.</li>
+    </ul>
+
+    <h2>About the data</h2>
+
+    <ul>
+    <li>The data are aggregated: each of the 16 rows represents a group of patients who share the same COVID-19 status, age group, sex and ethnicity. Each row gives the group's average result and its sample size.</li>
+    <li>Every bar is a weighted average, weighted by group size. This is because the groups are very different sizes, and an ordinary average would give small groups too much influence.</li>
+    <li>The bars show the weighted average of one blood marker for patients without COVID-19 and patients with COVID-19.</li>
+    </ul>
+
+    <p>
+        The data do not state the units of measurement, so each plot shows the weighted mean value as supplied.
+    </p>
+
+    <h2>What the plots show</h2>
+
+    <p>
+    Neutrophils are much higher in patients with COVID-19 (about 15.9) than in patients without it (about 3.0), and lymphocytes are lower (about 0.77 compared with 1.00). CRP is slightly higher in patients with COVID-19 (about 81.4 compared with 78.8). Ferritin and troponin are almost the same in both groups.
+    </p>
+
+    <p>
+        These plots are descriptive only. No statistical tests were carried out, so the differences should not be described as statistically significant.
+    </p>
+
+<div id="myDiv"></div>
+
+<div id="myDiv2"></div>
+
+<div id="myDiv3"></div>
+
+<div id="myDiv4"></div>
+
+<div id="myDiv5"></div>
+
+<h2>Explore the data</h2>
+<p>Choose a pathology measure to compare patients with and without COVID-19.</p>
+
+<select name="Outcomes" id="outcome">
+    <option value="Ferritin">Ferritin</option>
+    <option value="Troponin">Troponin</option>
+    <option value="Neutrophils">Neutrophils</option>
+    <option value="Lymphocytes">Lymphocytes</option>
+    <option value="CRP">CRP</option>
+</select>
+
+<p>Break down by:</p>
+<select name="Split" id="split">
+    <option value="none">All patients</option>
+    <option value="old">Age group</option>
+    <option value="male">Sex</option>
+    <option value="white">Ethnicity (white / non-white)</option>
+</select>
+
+<p>Chart type:</p>
+<select name="ChartType" id="charttype">
+    <option value="bar">Bar chart</option>
+    <option value="line">Dot and line plot</option>
+</select>
+
+<div id="myDiv6"></div>
+
+<h2>Compare two measures across all patient groups</h2>
+<p>Each bubble is one of the 16 patient groups. Its size shows how many patients are in the group, and its colour shows COVID-19 status.</p>
+
+<p>Horizontal axis:</p>
+<select name="XVar" id="xvar">
+    <option value="Ferritin">Ferritin</option>
+    <option value="Troponin">Troponin</option>
+    <option value="Neutrophils">Neutrophils</option>
+    <option value="Lymphocytes">Lymphocytes</option>
+    <option value="CRP">CRP</option>
+</select>
+
+<p>Vertical axis:</p>
+<select name="YVar" id="yvar">
+    <option value="Ferritin">Ferritin</option>
+    <option value="Troponin">Troponin</option>
+    <option value="Neutrophils">Neutrophils</option>
+    <option value="Lymphocytes">Lymphocytes</option>
+    <option value="CRP">CRP</option>
+</select>
+
+<div id="myDiv7"></div>
+
+<script> 
+
+const data
+=[{"COVID":0,"old":0,"male":0,"white":0,"Ferritin":80.7962,"Troponin":15.0776,"Neutrophils":2.9622,"Lymphocytes":1.009,"CRP":72.698,"sample":88},
+{"COVID":1,"old":0,"male":0,"white":0,"Ferritin":78.2594,"Troponin":14.5232,"Neutrophils":6.5465,"Lymphocytes":1.0095,"CRP":67.4789,"sample":23},
+{"COVID":0,"old":1,"male":0,"white":0,"Ferritin":80.1051,"Troponin":15.0196,"Neutrophils":2.9655,"Lymphocytes":1.0044,"CRP":73.603,"sample":33},
+{"COVID":1,"old":1,"male":0,"white":0,"Ferritin":79.1869,"Troponin":14.8105,"Neutrophils":21.2747,"Lymphocytes":0.6642,"CRP":76.098,"sample":38},
+{"COVID":0,"old":0,"male":1,"white":0,"Ferritin":80.293,"Troponin":15.2164,"Neutrophils":2.9697,"Lymphocytes":1.0025,"CRP":85.2045,"sample":83},
+{"COVID":1,"old":0,"male":1,"white":0,"Ferritin":82.4478,"Troponin":15.3914,"Neutrophils":11.2725,"Lymphocytes":0.86,"CRP":92.2727,"sample":24},
+{"COVID":0,"old":1,"male":1,"white":0,"Ferritin":81.2627,"Troponin":15.1298,"Neutrophils":3.0922,"Lymphocytes":1.0068,"CRP":87.3127,"sample":35},
+{"COVID":1,"old":1,"male":1,"white":0,"Ferritin":81.1032,"Troponin":15.2505,"Neutrophils":17.6567,"Lymphocytes":0.71,"CRP":85.317,"sample":64},
+{"COVID":0,"old":0,"male":0,"white":1,"Ferritin":80.3315,"Troponin":15.1271,"Neutrophils":2.9658,"Lymphocytes":1.0038,"CRP":72.0842,"sample":468},
+{"COVID":1,"old":0,"male":0,"white":1,"Ferritin":81.9102,"Troponin":14.701,"Neutrophils":8.5887,"Lymphocytes":0.9345,"CRP":74.6818,"sample":176},
+{"COVID":0,"old":1,"male":0,"white":1,"Ferritin":80.7869,"Troponin":15.1487,"Neutrophils":3.0018,"Lymphocytes":0.9997,"CRP":76.5904,"sample":195},
+{"COVID":1,"old":1,"male":0,"white":1,"Ferritin":81.2481,"Troponin":14.9856,"Neutrophils":20.0563,"Lymphocytes":0.6955,"CRP":77.0856,"sample":246},
+{"COVID":0,"old":0,"male":1,"white":1,"Ferritin":80.5322,"Troponin":14.9284,"Neutrophils":2.9699,"Lymphocytes":1.0067,"CRP":84.4454,"sample":353},
+{"COVID":1,"old":0,"male":1,"white":1,"Ferritin":80.7558,"Troponin":15.1274,"Neutrophils":9.952,"Lymphocytes":0.8898,"CRP":83.6312,"sample":190},
+{"COVID":0,"old":1,"male":1,"white":1,"Ferritin":81.1269,"Troponin":15.0935,"Neutrophils":2.9539,"Lymphocytes":0.9993,"CRP":89.6938,"sample":133},
+{"COVID":1,"old":1,"male":1,"white":1,"Ferritin":79.9424,"Troponin":14.9526,"Neutrophils":21.6836,"Lymphocytes":0.6442,"CRP":89.0144,"sample":241}]
+
+var colourNo = "#1a9c8c";    // No COVID-19 (teal)
+var colourYes = "#c2185b";   // COVID-19 (magenta)
+
+var covid_data = data.filter(obj => {
+    return obj.COVID == 1
+})
+var covid_ferritin = [];
+for (var i = 0; i < 8; i++) {
+    covid_ferritin.push(covid_data[i].Ferritin);
+}
+
+var covid_samp = [];
+for (var i = 0; i < 8; i++) {
+    covid_samp.push(covid_data[i].sample);
+}
+
+var non_covid_data = data.filter(obj => {
+    return obj.COVID == 0
+})
+var non_covid_ferritin = [];
+for (var i = 0; i < 8; i++) {
+    non_covid_ferritin.push(non_covid_data[i].Ferritin);
+}
+
+var non_covid_samp = [];
+for (var i = 0; i < 8; i++) {
+    non_covid_samp.push(non_covid_data[i].sample);
+}
+
+function weightedAve(grp_ave, weight) {
+    var c = [];
+    for (var i = 0; i < grp_ave.length; i++) {
+        c.push(grp_ave[i] * weight[i]);
+    }
+    return c.reduce((a, b) => a + b) / weight.reduce((a, b) => a + b);
+}
+var y1 = weightedAve(non_covid_ferritin, non_covid_samp)
+var y2 = weightedAve(covid_ferritin, covid_samp)
+
+function subsetMean(outcome, covid, splitVar, splitVal) {
+    var rows = data.filter(obj => {
+        return obj.COVID == covid && (splitVar == "none" || obj[splitVar] == splitVal)
+    });
+    var values = rows.map(obj => obj[outcome]);
+    var samps = rows.map(obj => obj.sample);
+    return weightedAve(values, samps);
+}
+
+var plot = [
+    {
+        x: ["No COVID-19", "COVID-19"],
+        y: [y1, y2],
+        type: "bar",
+        marker: {color: [colourNo, colourYes]}
+    }
+],
+layout = {
+    title: {text: "Ferritin by COVID-19 status"},
+    xaxis: {title: {text: "COVID-19 status"}},
+    yaxis: {title: {text: "Weighted mean ferritin"}}
+};
+
+Plotly.newPlot("myDiv", plot, layout);
+
+var covid_troponin = [];
+for (var i = 0; i < 8; i++) {
+    covid_troponin.push(covid_data[i].Troponin);
+}
+var non_covid_troponin = [];
+for (var i = 0; i < 8; i++) {
+    non_covid_troponin.push(non_covid_data[i].Troponin);
+}
+var y3 = weightedAve(non_covid_troponin, non_covid_samp)
+var y4 = weightedAve(covid_troponin, covid_samp)
+
+var plot2 = [
+    {
+        x: ["No COVID-19", "COVID-19"],
+        y: [y3, y4],
+        type: "bar",
+        marker: {color: [colourNo, colourYes]}
+    }
+],
+layout2 = {
+    title: {text: "Troponin by COVID-19 status"},
+    xaxis: {title: {text: "COVID-19 status"}},
+    yaxis: {title: {text: "Weighted mean troponin"}}
+};
+Plotly.newPlot("myDiv2", plot2, layout2);
+
+var covid_neutrophils = [];
+for (var i = 0; i < 8; i++) {
+    covid_neutrophils.push(covid_data[i].Neutrophils);
+}
+var non_covid_neutrophils = [];
+for (var i = 0; i < 8; i++) {
+    non_covid_neutrophils.push(non_covid_data[i].Neutrophils);
+}
+var y5 = weightedAve(non_covid_neutrophils, non_covid_samp)
+var y6 = weightedAve(covid_neutrophils, covid_samp)
+
+var plot3 = [
+    {
+        x: ["No COVID-19", "COVID-19"],
+        y: [y5, y6],
+        type: "bar",
+        marker: {color: [colourNo, colourYes]}
+    }
+],
+layout3 = {
+    title: {text: "Neutrophils by COVID-19 status"},
+    xaxis: {title: {text: "COVID-19 status"}},
+    yaxis: {title: {text: "Weighted mean neutrophils"}}
+};
+Plotly.newPlot("myDiv3", plot3, layout3);
+
+var covid_lymphocytes = [];
+for (var i = 0; i < 8; i++) {
+    covid_lymphocytes.push(covid_data[i].Lymphocytes);
+}
+var non_covid_lymphocytes = [];
+for (var i = 0; i < 8; i++) {
+    non_covid_lymphocytes.push(non_covid_data[i].Lymphocytes);
+}
+var y7 = weightedAve(non_covid_lymphocytes, non_covid_samp)
+var y8 = weightedAve(covid_lymphocytes, covid_samp)
+
+var plot4 = [
+    {
+        x: ["No COVID-19", "COVID-19"],
+        y: [y7, y8],
+        type: "bar",
+        marker: {color: [colourNo, colourYes]}
+    }
+],
+layout4 = {
+    title: {text: "Lymphocytes by COVID-19 status"},
+    xaxis: {title: {text: "COVID-19 status"}},
+    yaxis: {title: {text: "Weighted mean lymphocytes"}}
+};
+Plotly.newPlot("myDiv4", plot4, layout4);
+
+var covid_crp = [];
+for (var i = 0; i < 8; i++) {
+    covid_crp.push(covid_data[i].CRP);
+}
+var non_covid_crp = [];
+for (var i = 0; i < 8; i++) {
+    non_covid_crp.push(non_covid_data[i].CRP);
+}
+var y9 = weightedAve(non_covid_crp, non_covid_samp)
+var y10 = weightedAve(covid_crp, covid_samp)
+
+var plot5 = [
+    {
+        x: ["No COVID-19", "COVID-19"],
+        y: [y9, y10],
+        type: "bar",
+        marker: {color: [colourNo, colourYes]}
+    }
+],
+layout5 = {
+    title: {text: "CRP by COVID-19 status"},
+    xaxis: {title: {text: "COVID-19 status"}},
+    yaxis: {title: {text: "Weighted mean CRP"}}
+};
+Plotly.newPlot("myDiv5", plot5, layout5);
+
+function drawBubble() {
+    var select1 = document.getElementById("xvar");
+    var xvar = select1.options[select1.selectedIndex].value;
+
+    var select2 = document.getElementById("yvar");
+    var yvar = select2.options[select2.selectedIndex].value;
+
+    var no_covid_rows = data.filter(obj => {
+        return obj.COVID == 0
+    });
+    var covid_rows = data.filter(obj => {
+        return obj.COVID == 1
+    });
+
+    var trace1 = {
+        x: no_covid_rows.map(obj => obj[xvar]),
+        y: no_covid_rows.map(obj => obj[yvar]),
+        mode: "markers",
+        type: "scatter",
+        name: "No COVID-19",
+        marker: {
+            color: colourNo,
+            opacity: 0.7,
+            size: no_covid_rows.map(obj => obj.sample),
+            sizemode: "area",
+            sizeref: 2 * 468 / (50 ** 2),
+            sizemin: 6
+        }
+    };
+    var trace2 = {
+        x: covid_rows.map(obj => obj[xvar]),
+        y: covid_rows.map(obj => obj[yvar]),
+        mode: "markers",
+        type: "scatter",
+        name: "COVID-19",
+        marker: {
+            color: colourYes,
+            opacity: 0.7,
+            size: covid_rows.map(obj => obj.sample),
+            sizemode: "area",
+            sizeref: 2 * 468 / (50 ** 2),
+            sizemin: 6
+        }
+    };
+
+    var layout7 = {
+        title: {text: yvar + " versus " + xvar + " for the 16 patient groups"},
+        xaxis: {title: {text: "Mean " + xvar}},
+        yaxis: {title: {text: "Mean " + yvar}}
+    };
+    Plotly.newPlot("myDiv7", [trace1, trace2], layout7);
+}
+
+window.onload = function () {
+    document.getElementById("outcome").addEventListener("change", myFunction);
+    document.getElementById("split").addEventListener("change", myFunction);
+    document.getElementById("charttype").addEventListener("change", myFunction);   // new
+
+    document.getElementById("xvar").addEventListener("change", drawBubble);   // new
+    document.getElementById("yvar").addEventListener("change", drawBubble);   // new
+
+    myFunction();
+    drawBubble();                                                             // new
+}
+
+function myFunction () {
+    var select1 = document.getElementById("outcome");
+    var value1 = select1.options[select1.selectedIndex].value;
+
+    var select2 = document.getElementById("split");
+    var value2 = select2.options[select2.selectedIndex].value;
+
+    var select3 = document.getElementById("charttype");                            // new
+    var value3 = select3.options[select3.selectedIndex].value;                     // new
+
+    // Category labels for the x-axis, and the values to filter on
+    var labels = ["All patients"];
+    var splitValues = [0];
+    if (value2 == "old") {
+        labels = ["Younger", "Older"];
+        splitValues = [0, 1];
+    } else if (value2 == "male") {
+        labels = ["Female", "Male"];
+        splitValues = [0, 1];
+    } else if (value2 == "white") {
+        labels = ["Non-white", "White"];
+        splitValues = [0, 1];
+    }
+
+    var noCovidY = [];
+    var covidY = [];
+    for (var i = 0; i < splitValues.length; i++) {
+        noCovidY.push(subsetMean(value1, 0, value2, splitValues[i]));
+        covidY.push(subsetMean(value1, 1, value2, splitValues[i]));
+    }
+
+    var trace1 = {x: labels, y: noCovidY, name: "No COVID-19"};
+    var trace2 = {x: labels, y: covidY, name: "COVID-19"};
+    if (value3 == "line") {
+        trace1.type = "scatter";
+        trace1.mode = "lines+markers";
+        trace1.marker = {size: 10, color: colourNo};
+        trace1.line = {color: colourNo};
+        trace2.type = "scatter";
+        trace2.mode = "lines+markers";
+        trace2.marker = {size: 10, color: colourYes};
+        trace2.line = {color: colourYes};
+    } else {
+        trace1.type = "bar";
+        trace1.marker = {color: colourNo};
+        trace2.type = "bar";
+        trace2.marker = {color: colourYes};
+    }
+
+    var plot6 = [trace1, trace2],
+    layout6 = {
+        title: {text: value1 + " by COVID-19 status"},
+        barmode: "group",
+        xaxis: {title: {text: value2 == "none" ? "All patients" : "Patient group"}},
+        yaxis: {title: {text: "Weighted mean " + value1}}
+    };
+    Plotly.newPlot("myDiv6", plot6, layout6);
+}
+
+</script>
+          
+</body>
+
+</html>
